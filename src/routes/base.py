@@ -1,8 +1,6 @@
 from fastapi import FastAPI, APIRouter
 from helpers.config import get_settings
-base_router = APIRouter(
-
-)
+base_router = APIRouter()
 
 @base_router.get("/")
 async def welcome():
