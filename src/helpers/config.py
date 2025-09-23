@@ -6,6 +6,8 @@ class Settings(BaseSettings): # we inherit from BaseSettings
     OPENAI_API_KEY: str
     FILE_ALLOWED_TYPES: list[str]
     FILE_MAX_SIZE: int
+    FILES_DEFULT_CHUNK_SIZE: int
+    
     class Config:
         env_file = ".env"
 
