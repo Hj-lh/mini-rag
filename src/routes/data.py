@@ -8,7 +8,9 @@ import logging
 from .schemes.data import ProcessRequest
 from models.ProjectModel import ProjectModel
 from models.ChunkModel import ChunkModel
-from models.db_schemes import DataChunk
+from models.db_schemes import DataChunk, Asset
+from models.AssetModel import AssetModel
+
 
 logger = logging.getLogger("uvicorn.error")
 data_router = APIRouter(prefix="/data", tags=["Data"])
@@ -51,12 +53,24 @@ async def upload_file(request: Request, project_id: str, file: UploadFile):
             }
         )
     
-
+    # store asset record in db
+    asset_model = await AssetModel.create_indexes(
+        db_client=request.app.db_client
+    )
+    asset = Asset(
+        asset_project_id=project.id,
+        asset_type="file",
+        asset_name=file_id,
+        asset_size=os.path.getsize(file_path)
+    )
+    asset_record = await asset_model.create_asset(asset=asset)
 
     return JSONResponse(
         content={
             "status": "success",
-            "message": f"File '{file.filename}' uploaded successfully to project '{file_id}'.",
+            "file_id": str(asset_record.id),
+            "file_id_no": file_id,
+            "file_name": file.filename,
         }
     )
 
