@@ -11,6 +11,9 @@ class LLMProviderFactory:
             return OllamaProvider(
                 api_key=self.config.OPENAI_API_KEY,
                 base_url=self.config.OLLAMA_API_URL,
+                default_input_max_characters=self.config.DEFAULT_INPUT_MAX_CHARACTERS,
+                default_output_max_tokens=self.config.DEFAULT_OUTPUT_MAX_TOKENS,
+                default_temperature=self.config.DEFAULT_TEMPERATURE
                 
             )
         

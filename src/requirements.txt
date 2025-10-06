@@ -7,3 +7,6 @@ aiofiles==23.1.0
 langchain==0.3.27
 PyMuPDF==1.26.4
 Motor==4.3.4
+openai==0.27.10
+requests==2.31.0
+qdrant-client==1.15.5
