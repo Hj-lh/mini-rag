@@ -1,7 +1,7 @@
 from enum import Enum
 
 class VectorDBEnum(Enum):
-    QDRANT = "qdrant"
+    QDRANT = "QDRANT"
 
 class DistanceMethodEnum(Enum):
     COSINE = "cosine"

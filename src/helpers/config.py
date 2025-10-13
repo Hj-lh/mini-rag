@@ -17,6 +17,10 @@ class Settings(BaseSettings): # we inherit from BaseSettings
     EMBEDDING_MODEL_ID: str
     EMBEDDING_SIZE: int
 
+    VECTOR_DB_PROVIDER: str  # Options: "QDRANT", "PINECONE
+    VECTOR_DB_PATH: str
+    VECTOR_DB_DISTANCE_METHOD: str  # Options: "COSINE", "EUCLID
+
     class Config:
         env_file = ".env"
 

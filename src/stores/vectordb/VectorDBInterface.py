@@ -38,8 +38,18 @@ class VectorDBInterface(ABC):
         pass
 
     @abstractmethod
-    def insert_one(self, collection_name: str, texts: str, vectors: list, metadata: dict = None, record_ids: list = None, batch_size: int = 50) -> str:
+    def insert_one(self, collection_name: str, texts: str, vectors: list, metadata: dict = None, record_ids: list = None) -> str:
         """Insert a single vector into the specified collection."""
+        pass
+
+    @abstractmethod
+    def insert_many(self, collection_name: str, texts: list, vectors: list, metadatas: list = None, record_ids: list = None, batch_size: int = 50):
+        """Insert multiple vectors into the specified collection."""
+        pass
+
+    @abstractmethod
+    def search_by_vector(self, collection_name: str, vector: list, limit: int) -> list:
+        """Search for similar vectors in the specified collection."""
         pass
 
     
