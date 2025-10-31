@@ -15,3 +15,8 @@ class CohereEnums(Enum):
     USER = "user"
     ASSISTANT = "assistant"
 
+
+class DocumentTypeEnum(Enum):
+    DOCUMENT = "document"
+    QUERY = "query"
+
