@@ -12,10 +12,13 @@ class Settings(BaseSettings): # we inherit from BaseSettings
     MONGODB_URL: str
     MONGODB_DB_NAME: str
 
+    GENERATION_BACKEND: str
+    EMBEDDING_BACKEND: str
     OLLAMA_API_URL: str
     GENERATION_MODEL_ID: str
     EMBEDDING_MODEL_ID: str
     EMBEDDING_SIZE: int
+
 
     VECTOR_DB_PROVIDER: str  # Options: "QDRANT", "PINECONE
     VECTOR_DB_PATH: str
