@@ -24,8 +24,8 @@ class QdrantDBProvider(VectorDBInterface):
         self.client = QdrantClient(path=self.db_path)
 
     def disconnect(self):
-        raise NotImplementedError("Disconnect method is not implemented for QdrantDB.")
-    
+        self.client = None
+
     def is_collection_exists(self, collection_name: str) -> bool:
         return self.client.collection_exists(collection_name=collection_name)
     
@@ -52,7 +52,8 @@ class QdrantDBProvider(VectorDBInterface):
     def insert_one(self, collection_name: str, texts: str, vector: list, metadata: dict = None, record_ids: list = None) -> str:
         if not self.is_collection_exists(collection_name):
             raise ValueError(f"Collection {collection_name} does not exist.")
-        return self.client.upload_records(collection_name=collection_name,
+        try:
+            _ = self.client.upload_records(collection_name=collection_name,
                                         records = [models.Record(
                                             id=[record_ids],
                                             vector=vector, 
@@ -61,6 +62,9 @@ class QdrantDBProvider(VectorDBInterface):
                                                 "metadata": metadata
                                             },
                                         )])
+        except Exception as e:
+            self.logger.error(f"Error inserting record into collection {collection_name}: {e}")
+            return None
         return True
     
     def insert_many(self, collection_name: str, texts: list, vectors: list, metadatas: list = None, record_ids: list = None, batch_size: int = 50):
@@ -95,6 +99,7 @@ class QdrantDBProvider(VectorDBInterface):
                     records=batch_records,
                 )
             except Exception as e:
+                print(f"Error inserting batch starting at index {i}: {e}")
                 self.logger.error(f"Error inserting batch starting at index {i}: {e}")
                 return False
         return True

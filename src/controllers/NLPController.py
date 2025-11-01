@@ -30,10 +30,10 @@ class NLPController(BaseController):
         # step 1: create collection if not exists
         collection_name = self.create_collection_name(project_id=project.project_id)
         # step 2: manage items
-        texts = [chunk.text for chunk in chunks]
-        metadata = [chunk.metadata for chunk in chunks]
+        texts = [chunk.chunk_text for chunk in chunks]
+        metadata = [chunk.chunk_metadata for chunk in chunks]
         vectors = [
-            self.embedding_client.embed_text(text = text, document_type = DocumentTypeEnum.DOCUMENT.value)
+            self.embedding_client.embed_text(text = text, document_id = DocumentTypeEnum.DOCUMENT.value)
             for text in texts
         ]
         # step 3: create collection if not exists
@@ -46,11 +46,12 @@ class NLPController(BaseController):
         # step 4: insert into vector db
         _ = self.vectordb_client.insert_many(
             collection_name = collection_name,
+            texts = texts,
             vectors = vectors,
             metadatas = metadata,
-            documents = texts,
             record_ids = chunks_ids,
         )
+        return True
 
 
         

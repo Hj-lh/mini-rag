@@ -7,7 +7,7 @@ class OllamaProvider(LLMInterface):
 
     def __init__(self, api_key: str=None, base_url: str=None, default_input_max_characters: int=5000, default_output_max_tokens: int=5000, default_temperature: float=0.7):
         self.api_key = api_key
-        self.base_url = base_url if base_url else "http://localhost:11434"
+        self.base_url = base_url if base_url else "http://localhost:11434/v1"
 
         self.default_input_max_characters = default_input_max_characters
         self.default_output_max_tokens = default_output_max_tokens
