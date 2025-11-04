@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter, status, Request
 from fastapi.responses import JSONResponse
-from .schemes.nlp import PushRequest
+from .schemes.nlp import PushRequest, SearchRequest
 from models.ProjectModel import ProjectModel
 from models.ChunkModel import ChunkModel
 from controllers.NLPController import NLPController
@@ -71,4 +71,51 @@ async def index_project(project_id: str, request: Request, push_request: PushReq
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={"message": f"Successfully indexed chunks for project {project_id}.", "inserted_items_count": inserted_items_count}
+    )
+
+
+@nlp_router.get("/index/info/{project_id}")
+async def get_index_info(project_id: str, request: Request):
+
+    project_model = await ProjectModel.create_indexes(db_client=request.app.db_client)
+    project = await project_model.get_project_or_create_one(project_id=project_id)
+
+    nlp_controller = NLPController(
+        vectordb_client=request.app.vectordb_client,
+        embedding_client=request.app.embedding_client,
+        generation_client=request.app.generation_client
+    )
+    collection_info = nlp_controller.get_vector_db_collection_info(project=project)
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"message": f"Successfully retrieved index info for project {project_id}.", "collection_info": collection_info}
+    )
+
+@nlp_router.post("/index/search/{project_id}")
+async def search_index(request: Request, project_id: str, search_request: SearchRequest):
+    project_model = await ProjectModel.create_indexes(db_client=request.app.db_client)
+    project = await project_model.get_project_or_create_one(project_id=project_id)
+
+    nlp_controller = NLPController(
+        vectordb_client=request.app.vectordb_client,
+        embedding_client=request.app.embedding_client,
+        generation_client=request.app.generation_client
+    )
+
+    search_results = nlp_controller.search_vector_db_collection(
+        project=project,
+        text=search_request.text,
+        limit=search_request.limit
+    )
+
+    if not search_results:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"message": f"Failed to retrieve search results for project {project_id}."}
+        )
+    
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"message": f"Successfully retrieved search results for project {project_id}.", "search_results": search_results}
     )
