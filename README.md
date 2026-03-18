@@ -78,18 +78,18 @@ Built with a clean, modular architecture—this project demonstrates production-
 
 - Python 3.10+
 - MongoDB (via Docker or local installation)
-- Qdrant vector database
-- Ollama (for local LLM inference) or Cohere API key
+- Ollama (for local LLM inference) — or update `GENERATION_BACKEND`/`EMBEDDING_BACKEND` to `"cohere"` and supply a Cohere API key
+- Docker & Docker Compose (for running MongoDB)
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/mini-rag.git
+   git clone https://github.com/Hj-lh/mini-rag.git
    cd mini-rag
    ```
 
-2. **Set up virtual environment**
+2. **Set up a virtual environment**
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
@@ -103,15 +103,17 @@ Built with a clean, modular architecture—this project demonstrates production-
 
 4. **Start MongoDB with Docker**
    ```bash
-   cd docker
+   cd ../docker
+   cp .env.example .env
+   # Edit docker/.env and set MONGO_INITDB_ROOT_USERNAME and MONGO_INITDB_ROOT_PASSWORD
    docker-compose up -d
    ```
 
-5. **Configure environment variables**
+5. **Configure application environment variables**
    ```bash
-   cd src
+   cd ../src
    cp .env.example .env
-   # Edit .env with your configuration
+   # Edit src/.env — at minimum set MONGODB_URL and MONGODB_DB_NAME
    ```
 
 6. **Run the application**
@@ -119,7 +121,8 @@ Built with a clean, modular architecture—this project demonstrates production-
    uvicorn main:app --reload --host 0.0.0.0 --port 8000
    ```
 
-The API will be available at `http://localhost:8000`
+The API will be available at `http://localhost:8000`  
+Interactive API docs: `http://localhost:8000/docs`
 
 ---
 
@@ -177,7 +180,7 @@ Create a `.env` file in the `src` directory based on `.env.example`:
 
 ```env
 # Application
-APP_NAME="Mini RAG"
+APP_NAME="RAG"
 APP_VERSION="0.0.1"
 
 # File Processing
@@ -187,18 +190,27 @@ FILES_DEFAULT_CHUNK_SIZE=512000 # 500 KB
 
 # Database
 MONGODB_URL="mongodb://username:password@localhost:27017"
-MONGODB_DB_NAME="mini_rag"
+MONGODB_DB_NAME="mini_rag_db"
 
 # LLM Configuration
-GENERATION_BACKEND="ollama"     # or "cohere"
-GENERATION_MODEL_ID="llama2"
-EMBEDDING_BACKEND="ollama"
+GENERATION_BACKEND="Ollama"     # or "Cohere"
+GENERATION_MODEL_ID="llama3.2"
+EMBEDDING_BACKEND="Ollama"      # or "Cohere"
 EMBEDDING_MODEL_ID="nomic-embed-text"
 EMBEDDING_SIZE=768
+OLLAMA_API_URL="http://localhost:11434/v1"
 
-# Vector Database
-VECTOR_DB_PROVIDER="qdrant"
-QDRANT_URL="http://localhost:6333"
+# Vector Database (Qdrant – stored locally as files)
+VECTOR_DB_PROVIDER="QDRANT"
+VECTOR_DB_PATH="./vectordb_storage"
+VECTOR_DB_DISTANCE_METHOD="cosine"  # Options: cosine, euclidean, dot
+```
+
+Also create a `.env` file in the `docker` directory based on `docker/.env.example`:
+
+```env
+MONGO_INITDB_ROOT_USERNAME=admin
+MONGO_INITDB_ROOT_PASSWORD=yourpassword
 ```
 
 ---

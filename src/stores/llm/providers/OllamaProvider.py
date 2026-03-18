@@ -18,8 +18,11 @@ class OllamaProvider(LLMInterface):
         self.embedding_model = None
         self.embedding_size = None
 
+<<<<<<< HEAD:src/stores/llm/providers/Ollamaprovider.py
         self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
         self.enums = OllamaEnums
+=======
+>>>>>>> 51eb77fd04896a21204ad0dfdc15f4ebc42fe4e6:src/stores/llm/providers/OllamaProvider.py
         self.logger = logging.getLogger(__name__)
 
     
