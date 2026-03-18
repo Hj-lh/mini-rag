@@ -19,7 +19,7 @@ class OllamaProvider(LLMInterface):
         self.embedding_size = None
 
         self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
-
+        self.enums = OllamaEnums
         self.logger = logging.getLogger(__name__)
 
     

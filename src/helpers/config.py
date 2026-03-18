@@ -24,6 +24,8 @@ class Settings(BaseSettings): # we inherit from BaseSettings
     VECTOR_DB_PATH: str
     VECTOR_DB_DISTANCE_METHOD: str  # Options: "COSINE", "EUCLID
 
+    DEFUALT_LANG: str = "en"
+
     class Config:
         env_file = ".env"
 
